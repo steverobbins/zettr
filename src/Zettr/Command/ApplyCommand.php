@@ -25,6 +25,12 @@ class ApplyCommand extends Command
                 'Dry run'
             )
             ->addOption(
+                'skipEnvMissingError',
+                null,
+                InputOption::VALUE_NONE,
+                'Continue if specified env is not found'
+            )
+            ->addOption(
                 'groups',
                 null,
                 InputOption::VALUE_OPTIONAL,
@@ -59,7 +65,8 @@ class ApplyCommand extends Command
                 $environment,
                 $file,
                 $input->getOption('groups'),
-                $input->getOption('excludeGroups')
+                $input->getOption('excludeGroups'),
+                $input->getOption('skipEnvMissingError')
             );
             $processor->setOutput($output);
             try {

@@ -46,7 +46,7 @@ class Processor {
      * @param array $excludeGroups
      * @throws \InvalidArgumentException
      */
-    public function __construct($environment, $settingsFilePath, $groups=null, $excludeGroups=null) {
+    public function __construct($environment, $settingsFilePath, $groups=null, $excludeGroups=null, $skipEnvMissingError=false) {
         if (empty($environment)) {
             throw new \InvalidArgumentException('No environment parameter set.');
         }
@@ -73,7 +73,8 @@ class Processor {
             $this->environment,
             'DEFAULT',
             $this->groups,
-            $this->excludeGroups
+            $this->excludeGroups,
+            $skipEnvMissingError
         );
     }
 

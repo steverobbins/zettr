@@ -25,7 +25,7 @@ class HandlerCollection implements \Iterator {
      * @param array $excludeGroups
      * @throws \Exception
      */
-    public function buildFromSettingsCSVFile($csvFile, $environment, $defaultEnvironment='DEFAULT', array $includeGroups=array(), array $excludeGroups=array()) {
+    public function buildFromSettingsCSVFile($csvFile, $environment, $defaultEnvironment='DEFAULT', array $includeGroups=array(), array $excludeGroups=array(), $skipEnvMissingError=false) {
         if (!is_file($csvFile)) {
             throw new \Exception('File "'.$csvFile.'" not found.');
         }
@@ -124,7 +124,8 @@ class HandlerCollection implements \Iterator {
                             $row,
                             $environment,
                             $defaultEnvironment,
-                            $handler
+                            $handler,
+                            $skipEnvMissingError
                         );
                         if (strtolower(trim($value)) == '--empty--') {
                             $value = '';
@@ -191,11 +192,11 @@ class HandlerCollection implements \Iterator {
      * @throws \Exception
      * @return string
      */
-    private function getValueFromRow(array $row, $environment, $fallbackEnvironment, Handler\AbstractHandler $handler=null) {
+    private function getValueFromRow(array $row, $environment, $fallbackEnvironment, Handler\AbstractHandler $handler=null, $skipEnvMissingError=false) {
         $value              = null;
         $defaultColumnIndex = $this->getColumnIndexForEnvironment($fallbackEnvironment, true);
-        $envColumnIndex = $this->getColumnIndexForEnvironment($environment);
-        if (array_key_exists($envColumnIndex, $row)) {
+        $envColumnIndex = $this->getColumnIndexForEnvironment($environment, $skipEnvMissingError);
+        if ($envColumnIndex !== false && array_key_exists($envColumnIndex, $row)) {
             $value = $row[$envColumnIndex];
             if ($value == '--empty--') {
                 $value = '';
